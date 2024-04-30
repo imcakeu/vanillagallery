@@ -7,11 +7,23 @@
                     color: cadetblue;
                     text-align: center;
                } 
+               div {
+                    padding-left: 15%;
+                    padding-right: 15%;
+               }
                a, ul {
                     color: cadetblue;
                     text-align: center;
                     padding: 0;
                     list-style-position: inside;
+               }
+               img {
+                    width: 200px;
+                    height: auto;
+                    padding-left: 50px;
+                    padding-right: 50px;
+                    padding-top: 10px;
+                    padding-right: 10px;
                }
           </style>
           <meta charset="UTF-8">
@@ -21,13 +33,15 @@
      </head>
      <br>
      <body>
-          <h2>Cliquez pour visionner une photo</h2>
-          <ul>
-               <li> <a href="/image1"> Image 1 </a> </li>
-               <li> <a href="/image2"> Image 2 </a> </li>
-               <li> <a href="/image3"> Image 3 </a> </li>
-          </ul>
+          <div>
+               <h2>Cliquez pour visionner une photo</h2>
+               <a href="/image1"> <img src="/imgfile1_small"> </a>
+               <a href="/image2"> <img src="/imgfile2_small"> </a>
+               <a href="/image3"> <img src="/imgfile3_small"> </a>
+               <a href="/image4"> <img src="/imgfile4_small"> </a>
+               <a href="/image5"> <img src="/imgfile5_small"> </a>
+          </div>
           <hr>
-          <a href="/"> Retourner a la page principale</a>
+          <a href="/">Retour</a>
      </body>
 </html>

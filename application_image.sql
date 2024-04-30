@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS orientations;
 DROP TABLE IF EXISTS auteurs;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS commentaires;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS accounts_images_like;
 
 CREATE TABLE orientations (
      id SERIAL PRIMARY KEY,
@@ -19,6 +21,8 @@ CREATE TABLE auteurs (
      nom VARCHAR(100) NOT NULL,
      prenom VARCHAR(100)
 );
+
+INSERT INTO auteurs (nom, prenom) VALUES ('Diconi', 'Edward');
 
 CREATE TABLE images (
      id SERIAL PRIMARY KEY,

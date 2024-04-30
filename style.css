@@ -19,7 +19,7 @@ a {
 .image-component {
      position: relative;
      margin-right: 10px;
-     margin-bottom: 50px;
+     margin-bottom: 75px;
 } 
 .image-component-container { 
      transition: transform 0.3s ease;

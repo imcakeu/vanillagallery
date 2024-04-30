@@ -3,7 +3,7 @@ const http = require("http");
 const fs = require("fs");
 const { Client } = require('pg');
 const crypto = require("crypto");
-
+const { error } = require("console");
 
 // PostgreSQL DB
 const client = new Client({
@@ -54,9 +54,9 @@ server.on("request", async (req, res) => {
           }
      }
 
-     // Accès pages et ressources
+     // GET Routes
      if(req.method === 'GET') {
-          // Pages
+          // Webpages
           if(req.url == "/"){
                let html = await pageIndex(username, sessions[sessionId].id);
                res.end(html);
@@ -79,17 +79,15 @@ server.on("request", async (req, res) => {
                res.end(pageSignForm(false));
           }
           else if(req.url == "/signoff"){
-               // Clear session information for the current user
                if (sessionId && sessions[sessionId]) {
                     delete sessions[sessionId];
                }
 
-               // Redirect the user to the homepage or sign-in page
                res.writeHead(302, {'Location': '/'});
                res.end();
           }
 
-          // Ressources
+          // Resources
           else if (req.url.startsWith('/image/')) {
                try {
                     res.end(fs.readFileSync('.'+req.url));
@@ -110,7 +108,7 @@ server.on("request", async (req, res) => {
                res.end(pageMessage("404", "page not found", false));
           }
      }
-     // Requête de publication de commentaire
+     // Comment publishing
      else if (req.method === "POST" && req.url === "/description-image") {
           let donnees;
           req.on("data", (dataChunk) => {
@@ -134,7 +132,7 @@ server.on("request", async (req, res) => {
                }
           });
      }
-     // Requête de like d'image
+     // Image liking
      else if (req.url.startsWith("/like/") && req.method === "POST") {
           let data = "";
           req.on("data", (chunk) => {
@@ -145,9 +143,8 @@ server.on("request", async (req, res) => {
               if (username && imageNumber) {
                     client.query("INSERT INTO accounts_images_like (id_account, id_image) VALUES ($1, $2)", [sessions[sessionId].id, imageNumber], (err, result) => {
                          if (err) {
-                              console.error("Error inserting like:", err);
                               res.statusCode = 500;
-                              res.end(pageMessage("Error", "Failed liking image!", false));
+                              res.end(pageMessage("Error", "Error inserting like:", err), false);
                          } else {
                               res.writeHead(302, { 'Location': '/gallery' });
                               res.end();
@@ -156,11 +153,11 @@ server.on("request", async (req, res) => {
                     client.query("UPDATE images SET likes = COALESCE(likes, 0) + 1 WHERE id =" + imageNumber + ";")
               } else {
                     res.statusCode = 400;
-                    res.end(pageMessage("Error", "Invalid request parameters!", false));
+                    res.end(pageMessage("Error", "Invalid request parameters!"), false);
               }
           });
      }
-     // Requête de dislike d'image
+     // Image disliking
      else if (req.url.startsWith("/dislike/") && req.method === "POST") {
           let data = "";
           req.on("data", (chunk) => {
@@ -172,9 +169,8 @@ server.on("request", async (req, res) => {
                if (username && imageNumber) {
                          client.query("DELETE FROM accounts_images_like WHERE id_account=$1 AND id_image=$2", [sessions[sessionId].id, imageNumber], (err, result) => {
                               if (err) {
-                                   console.error("Error removing like:", err);
                                    res.statusCode = 500;
-                                   res.end(pageMessage("Error", "Failed disliking image!", false));
+                                   res.end(pageMessage("Error", "Error removing like:", err), false);
                               } else {
                                    res.writeHead(302, { 'Location': '/gallery' });
                                    res.end();
@@ -183,11 +179,11 @@ server.on("request", async (req, res) => {
                          client.query("UPDATE images SET likes = COALESCE(likes, 0) - 1 WHERE id =" + imageNumber + ";");
                } else {
                          res.statusCode = 400;
-                         res.end(pageMessage("Error", "Invalid request parameters!", false));
+                         res.end(pageMessage("Error", "Invalid request parameters!"), false);
                }
           });
      }
-     // Requête de création de compte
+     // Account creation request
      else if (req.url === '/signup' && req.method === 'POST') {
           let data;
           req.on("data", (dataChunk) => {
@@ -216,7 +212,7 @@ server.on("request", async (req, res) => {
                }
           });
      }
-     // Réquête de connexion de compte
+     // Login
      else if (req.url === '/signin' && req.method === 'POST') {
           let data;
           req.on("data", (dataChunk) => {
@@ -258,8 +254,8 @@ server.listen(port, host, () => {
      console.log(`Server running at http://${host}:${port}/`);
 });
 
-// Page index/home 
-// Affiche les 3 images les plus récentes, et un lien pour la Photo Gallery
+// Index/Home page 
+// Shows 3 most recent photos. Links to gallery.
 async function pageIndex(username, userID){
      try {
           const sqlQuery = await client.query('SELECT * FROM images ORDER BY date DESC LIMIT 3'); 
@@ -289,8 +285,8 @@ async function pageIndex(username, userID){
 }
 
 // Photo Gallery (url: .../gallery)
-// Affiche un mur avec toutes les images disponibles dans la base de données
-// Possibilité d'ouvrir chacune de ces images dans le Photo Viewer
+// Displays all available photos in a "gallery wall" format
+// Clicking on a photo leads you to the "Photo Viewer" display
 async function pageGallery(username, userID){
      try {
           const sqlQuery = await client.query('SELECT * FROM images ORDER BY id;'); 
@@ -322,6 +318,8 @@ async function pageGallery(username, userID){
      }
 }
 
+// Used by PhotoGalleryElement to update the like button 
+// to show whether user has liked said photo
 function userHasLikedImage(rows, userID, imageID){
      for(let i=0; i<rows.length; i++){
           if(rows[i].id_account == userID && rows[i].id_image == imageID){
@@ -332,8 +330,8 @@ function userHasLikedImage(rows, userID, imageID){
      return false;
 }
 
-// Template pour une image avec un lien ainsi que son titre et son nombre de likes
-// La fonctionnalité de like n'est disponible que si l'utilisateur est connecté
+// Used by both Homepage and Photo Gallery as a prefab for photos
+// Liking is only possible by logged-in users
 function pageGalleryElement(number, imageFile, imageName, imageLikes, hasAccount, hasLikedImage, isForcedStaticLike) {
      if (imageLikes == null) imageLikes = 0;
  
@@ -349,10 +347,10 @@ function pageGalleryElement(number, imageFile, imageName, imageLikes, hasAccount
      html += '<div class="info-element-container">';
      html += '<p>"' + imageName + '"</p><br>';
      html += '<p>' + imageLikes + '   </p>';
+
      if (hasAccount && !isForcedStaticLike) {
           if(hasLikedImage) {
-               // Permettre de dislike l'image
-               // Afficher image "liké"
+               // Shows the filled like button
                html += '<form action="/dislike/' + number + '" method="post" style="display: inline;">';
                html += '<input type="hidden" name="imageNumber" value="' + number + '">';
                html += '<button type="submit" class="like-button" style="background-color: transparent; border: none;">';
@@ -361,8 +359,7 @@ function pageGalleryElement(number, imageFile, imageName, imageLikes, hasAccount
                html += '</form>';
           }
           else {
-               // Permettre de like l'image
-               // Afficher image "non liké"
+               // Shows the hollow like button
                html += '<form action="/like/' + number + '" method="post" style="display: inline;">';
                html += '<input type="hidden" name="imageNumber" value="' + number + '">';
                html += '<button type="submit" class="like-button" style="background-color: transparent; border: none;">';
@@ -371,7 +368,8 @@ function pageGalleryElement(number, imageFile, imageName, imageLikes, hasAccount
                html += '</form>';
           }
      } else {
-         html += '   <img class="like-element-static" src=/image/icon/like_empty.png>';
+          // If user isn't logged in, like button is hollow and doesn't have the hover animation
+          html += '   <img class="like-element-static" src=/image/icon/like_empty.png>';
      }
      html += '</div>';
      html += '</div>';
@@ -383,9 +381,8 @@ function pageGalleryElement(number, imageFile, imageName, imageLikes, hasAccount
  } 
 
 // Photo Viewer (url: .../viewer/imageXYZ.jpg)
-// Affiche des boutons pour passer à l'image précedente ou suivante
-// Possibilité de cliquer l'image pour la passer en plein écran/la télécharger
-// Possibilité de déposer des commentaires et de les visualiser
+// Displays the selected photo and allows to browse other photos
+// Comments can be submitted by logged in users
 async function pageViewer(page, username){
      try {
           // SQL requests
@@ -410,21 +407,21 @@ async function pageViewer(page, username){
           let comments_username = comment_query.rows.map(row => row.username);
           let comments_text = comment_query.rows.map(row => row.texte);
      
-          // header
+          // Header
           let html = pageTemplate();
           html += accountPanel(username);
           html += '<h1>"' + image_centre_name + '"</h1>';
           html += "<p>(" + page + "/" + imgcount + ")<br><br><br><br>";
      
-          // photo viewer
-          html += "<div class='photoViewer'>";
-          html += "<img src='/image/" + image_centre + ".jpg' id='largeImage'>";
-          if(image_left != -1) html += "<a href='/viewer/" + (page-1) + "' id='navPhotoLeft'> <img src='/image/" + image_left + "_small.jpg'></a>";
-          if(image_right != -1) html += "<a href='/viewer/" + (page+1) + "' id='navPhotoRight'> <img src='/image/" + image_right + "_small.jpg'></a>";
+          // Photo viewer
+          html += "<div class='photo-viewer'>";
+          html += "<img src='/image/" + image_centre + ".jpg' id='photo-viewer-main-image'>";
+          if(image_left != -1) html += "<a href='/viewer/" + (page-1) + "' id='photo-viewer-left-image'> <img src='/image/" + image_left + "_small.jpg'></a>";
+          if(image_right != -1) html += "<a href='/viewer/" + (page+1) + "' id='photo-viewer-right-image'> <img src='/image/" + image_right + "_small.jpg'></a>";
           html += "</div>";
           html += "<a class='link' href='/gallery'>return</a><br><br>";
      
-          // comment box
+          // Comment box
           html += "<h2>comments:</h2>";
           if(username) {
                html += '<form action="/description-image" method="post">';
@@ -454,8 +451,8 @@ async function pageViewer(page, username){
      }
 }
 
-// La page d'inscription/connexion
-// signWhatDisplay est purement visuel et different du form qui envoie la requête
+// Generic sign-up/sign-in page
+// signWhatDisplay is purely visual. signWhat is the actual form sent.
 function pageSignForm(up) {
      let signWhat = up ? 'signup' : 'signin';
      let signWhatDisplay = up ? 'sign-up' : 'sign-in';
@@ -477,7 +474,8 @@ function pageSignForm(up) {
      return html;
 }
 
-// Affiché après la création d'un compte
+// Page shown after a successful signup.
+// Links to signin page directly. Yay for good UX.
 function pageSignUpSuccess(username) {
      let html = pageTemplate();
      html += "<br><br>";
@@ -488,7 +486,7 @@ function pageSignUpSuccess(username) {
      return html;
 }
 
-// Génere la base de toutes les pages
+// Template for all pages.
 function pageTemplate(){
      let html = "<!DOCTYPE html><html lang='en'>";
      html += '<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">';
@@ -500,9 +498,9 @@ function pageTemplate(){
      return html;
 }
 
-// Génere le panel qui affiche le statut de connexion de l'utilisateur
-// Possibilité de se connecter ou créer un compte si pas déjà fait
-// Possibilité de se déconnecter sinon
+// Template for the user panel shown on almost every page
+// Prompts user to sign-in/sign-up if not done already
+// Prompts signed-in user to sign-off
 function accountPanel(username) {
      let html = "<div style='text-align: right;'>";
      if (username) {
@@ -519,8 +517,9 @@ function accountPanel(username) {
      return html;
 }
 
-// Affiche une page qui affiche un message en plein écran
-// Généralement utilisé pour les 404
+// Generic page that displays a message.
+// Generally used for errors or 404.
+// Optionally logs message in console.
 function pageMessage(title, msg, isLog){
      let html = pageTemplate();
      html += "<br><br>";

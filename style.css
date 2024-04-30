@@ -54,7 +54,7 @@ a {
 
 /*                  */
 
-.photoViewer {
+.photo-viewer {
      position: relative; 
      width: 95%;
      height: 700px;
@@ -62,7 +62,7 @@ a {
      margin-right: auto;
 }
 
-#largeImage {
+#photo-viewer-main-image {
      display: inline-block; /* or display: inline-block; */
      height: 600px;
      width: auto;
@@ -73,11 +73,11 @@ a {
      z-index: 100;
 }
 
-#largeImage:hover {
+#photo-viewer-main-image:hover {
      /* transform: scale(1.05); /* Scale up on hover */
  }
 
-#navPhotoLeft {
+#photo-viewer-left-image {
      position: absolute; 
      bottom: 0;
      left: 0; 
@@ -85,11 +85,11 @@ a {
      transition: transform 0.3s ease; /* Add transition for smooth scaling */
 }
 
-#navPhotoLeft:hover {
+#photo-viewer-left-image:hover {
      transform: scale(1.05); /* Scale up on hover */
 }
 
-#navPhotoRight {
+#photo-viewer-right-image {
      position: absolute; 
      bottom: 0;
      right: 0;
@@ -97,7 +97,7 @@ a {
      transition: transform 0.3s ease; /* Add transition for smooth scaling */
 }
 
-#navPhotoRight:hover {
+#photo-viewer-right-image:hover {
      transform: scale(1.05); /* Scale up on hover */
 }
 

@@ -1,0 +1,15 @@
+{
+  "name": "cakeu_photos",
+  "version": "0.1.0",
+  "description": "Projet de site web pour la matière Bases de données et programmation web (4TPU216U) du S2.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Edward Diconi",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "pg": "^8.11.5"
+  }
+}

@@ -12,16 +12,14 @@ a {
 #photoGallery {
      display: flex;
      flex-wrap: wrap;
-     justify-content: space-between;
-     padding-left: 20%;
-     padding-right: 20%;
+     justify-content:center;
+     padding-left: 5%;
+     padding-right: 5%;
 }
 
 .photoGalleryElement {
-     flex: 0 0 10px; /* Adjust column width as needed */
-     margin-bottom: 10px; /* Adjust margin between rows */
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
-     transition: transform 0.3s ease; /* Add transition for smooth scaling */
+     margin: 10px;
+     transition: transform 0.3s ease;
  }
  
 .photoGalleryElement:hover {
@@ -30,7 +28,7 @@ a {
 
 .photoViewer {
      position: relative; 
-     width: 1000px;
+     width: 95%;
      height: 700px;
      margin-left: auto;
      margin-right: auto;
@@ -38,11 +36,11 @@ a {
 
 #largeImage {
      display: inline-block; /* or display: inline-block; */
-     height: 650px;
+     height: 600px;
      width: auto;
      text-align: center;
      margin-bottom: 20px; /* Adjust margin between rows */
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Add box shadow */
      transition: transform 0.3s ease; /* Add transition for smooth scaling */
 }
 
@@ -55,7 +53,6 @@ a {
      bottom: 0;
      left: 0; 
      margin-bottom: 20px; /* Adjust margin between rows */
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
      transition: transform 0.3s ease; /* Add transition for smooth scaling */
 }
 
@@ -68,7 +65,6 @@ a {
      bottom: 0;
      right: 0;
      margin-bottom: 20px; /* Adjust margin between rows */
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
      transition: transform 0.3s ease; /* Add transition for smooth scaling */
 }
 
@@ -101,16 +97,16 @@ input[type="text"] {
 }
 
 /* Lien: style de base */
-a:link {
+a.link:link {
      color: white;
-} a:visited {
+} a.link:visited {
      color: white;
 }
 /* Lien: hover */
-a:hover {
+a.link:hover {
      color: #293132;
      background-color: white;
-} a:active {
+} a.link:active {
      color: #293132;
      background-color: white;
 }

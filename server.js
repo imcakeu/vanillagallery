@@ -51,6 +51,9 @@ server.on("request", async (req, res) => {
                let html = await photoGallery();
                res.end(html);
           }
+          else if(req.url == "/page-image.js"){
+               res.end(fs.readFileSync("./page-image.js"));
+          }
           else if(req.url == "/image-description"){
                res.end(fs.readFileSync("./image-description.html", "utf-8"));
           }
@@ -194,7 +197,8 @@ async function pageViewer(page){
      
           // photo viewer
           html += "<div class='photoViewer'>";
-          html += "<a href='/image/" + image_centre + ".jpg' id='largeImage'><img src='/image/" + image_centre + ".jpg' id='largeImage'></a>";
+          // html += "<a href='/image/" + image_centre + ".jpg' id='largeImage'><img src='/image/" + image_centre + ".jpg' id='largeImage'></a>";
+          html += "<img src='/image/" + image_centre + ".jpg' id='largeImage'>";
           if(image_left != -1) html += "<a href='/imageviewer/" + (page-1) + "' id='navPhotoLeft'> <img src='/image/" + image_left + "_small.jpg'></a>";
           if(image_right != -1) html += "<a href='/imageviewer/" + (page+1) + "' id='navPhotoRight'> <img src='/image/" + image_right + "_small.jpg'></a>";
           html += "</div>";
@@ -204,18 +208,20 @@ async function pageViewer(page){
           html += "<h2>comments:</h2>";
           html += '<form action="/description-image" method="post">';
           html += '<input type="hidden" name="image-number" value=' + page +'>';
-          html += '<input type="text" name="description">';
-          html += '<input type="submit" value="Envoyer"></form><br>';
+          html += '<input type="text" name="description" id="commentBox">';
+          html += '<input type="submit" value="Envoyer" id="submitButton"></form><br>';
           if(comment_count>0){
                for(let i=0; i<comment_count; i++){
-                    html += "<p><b>[" + comments_username[i] + "]</b>: " + decodeURIComponent(comments_text[i]);
+                    html += "<p><b>[" + comments_username[i] + "]</b>: " + decodeURIComponent(comments_text[i]) + "</p>";
                }
           }
           else{
                html += "<p> no comments yet.<br>be the first to make one!</p>"
           }
-          html += '<br><br></body></html>';
-     
+          html += '<br><br></body>';
+          html += "<script type='text/javascript' src='/page-image.js'></script>";
+          html += '</html>';
+
           return html; 
      } 
      catch (error) {

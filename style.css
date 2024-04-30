@@ -41,11 +41,12 @@ a {
      text-align: center;
      margin-bottom: 20px; /* Adjust margin between rows */
      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25); /* Add box shadow */
-     transition: transform 0.3s ease; /* Add transition for smooth scaling */
+     /* transition: transform 0.3s ease; /* Add transition for smooth scaling */
+     z-index: 100;
 }
 
 #largeImage:hover {
-     transform: scale(1.05); /* Scale up on hover */
+     /* transform: scale(1.05); /* Scale up on hover */
  }
 
 #navPhotoLeft {
@@ -94,6 +95,9 @@ input[type="text"] {
 } input[type="submit"]:hover {
      background-color: #a6978a;
      color: #ffffff
+} input[type="submit"]:disabled {
+     background-color: #15191a;
+     color: #7e7369;
 }
 
 /* Lien: style de base */

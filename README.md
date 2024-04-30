@@ -1,6 +1,5 @@
 # Vanilla Gallery
-## A JavaScript/NodeJS photo gallery website with PostgreSQL support
-Vanilla Gallery is a website that can be used as a photography portfolio.
+A JavaScript/NodeJS photo gallery website with PostgreSQL support
 > This was my final project for my Web Development and Databases course in my 1st year of Computer Science at the University of Bordeaux.
 
 ## Features
@@ -25,7 +24,7 @@ You simply need to copy/paste the contents of first application_image.sql then i
 To add your own content you must:
 - Put your photos in the ./images/ folder (make sure they're all .jpg, not .jpeg or .png)
 - Make sure each photo has a thumbnail that's max 200px size and that has the same name, ending with a _small.jpg
-- Fill your database by following what i've did in *images.sql*
+- Fill your database by following what i've did in images.sql
 ```
 3. Start the webserver
 ```

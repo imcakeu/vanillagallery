@@ -36,4 +36,15 @@ CREATE TABLE commentaires (
      id_image int references images
 );
 
-SELECT * FROM images;
+CREATE TABLE accounts (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    salt BYTEA,
+    hash BYTEA
+);
+
+CREATE TABLE accounts_images_like (
+     id SERIAL PRIMARY KEY,
+     id_account int references accounts,
+     id_image int references images
+);

@@ -3,7 +3,7 @@ let mainImage = document.getElementById('largeImage');
 let size = 1;
 
 function enlarge(img){
-     if(size == 1) size = 1.15;
+     if(size == 1) size = 1.1;
      else size = 1;
      img.style.transform = "scale(" + size + ")";
 }
@@ -22,4 +22,4 @@ function updateCommentBox(event) {
     submitButton.disabled = event.target.value.trim() === "";
 }
 // Desactivé par défault (car la boîte de texte est vide par défaut)
-submitButton.disabled = false;
+submitButton.disabled = true;

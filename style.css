@@ -9,22 +9,50 @@ a {
      font-weight: bold;
 }
 
-#photoGallery {
+#image-gallery {
      display: flex;
      flex-wrap: wrap;
      justify-content:center;
      padding-left: 5%;
      padding-right: 5%;
 }
-
-.photoGalleryElement {
-     margin: 10px;
+.image-component {
+     position: relative;
+     margin-right: 10px;
+     margin-bottom: 50px;
+} 
+.image-component-container { 
      transition: transform 0.3s ease;
- }
- 
-.photoGalleryElement:hover {
-     transform: scale(1.05); /* Scale up on hover */
- }
+} .image-component-container:hover {
+     transform: scale(1.05);
+}
+#image-gallery div.image-element  img {
+     width: 100%;
+}
+#image-gallery div.info-element {
+     position: absolute;
+     width: 100%;
+     background-color: #918479;
+}
+#image-gallery div.info-element p {
+     display: inline;
+}
+#image-gallery div.info-element-container {
+     padding-left: 5px;
+     padding-right: 5px;
+}
+.like-element-static {
+     width: 15px;
+}
+.like-element {
+     width: 15px;
+     transition: transform 0.3s ease;
+
+} .like-element:hover {
+     transform: scale(1.2);
+} 
+
+/*                  */
 
 .photoViewer {
      position: relative; 
@@ -73,8 +101,27 @@ a {
      transform: scale(1.05); /* Scale up on hover */
 }
 
+.form-label { 
+     display: block; 
+     margin-top: 15px;
+}
+
+.form-submit {
+     margin-top: 20px;
+}
+
+
 /* Input (commentaires) */
 input[type="text"] {
+     padding: 8px;
+     margin: 5px 0;
+     width: 20em;
+     box-sizing: border-box;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     font-size: 16px;
+     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+} input[type="password"] {
      padding: 8px;
      margin: 5px 0;
      width: 20em;

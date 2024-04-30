@@ -1,0 +1,63 @@
+body {
+     background-color: #9f8f82;
+     color: #293132;
+     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+     text-align: center;
+}
+
+a {
+     font-weight: bold;
+}
+
+.photoGallery {
+     padding-left: 20%;
+     padding-right: 20%;
+}
+
+.photoViewer {
+     position: relative; /* Set the container position to relative */
+     width: 1000px; /* Set the width of your container (adjust as needed) */
+     height: auto; /* Set the height of your container (adjust as needed) */
+     margin-left: auto;
+     margin-right: auto;
+}
+
+#largeImage {
+     width: 500px;
+     height: auto;
+     text-align: center;
+}
+
+#navPhotoLeft {
+     position: absolute; /* Set the anchor position to absolute */
+     bottom: 0; /* Align the anchor to the bottom */
+     left: 0; /* Align the anchor to the left */
+}
+
+#navPhotoRight {
+     position: absolute; /* Set the anchor position to absolute */
+     bottom: 0; /* Align the anchor to the bottom */
+     right: 0; /* Align the anchor to the left */
+}
+
+/* unvisited link */
+a:link {
+     color: white;
+}
+   
+/* visited link */
+a:visited {
+     color: white;
+}
+   
+/* mouse over link */
+a:hover {
+     color: #293132;
+     background-color: white;
+}
+   
+/* selected link */
+a:active {
+     color: #293132;
+     background-color: white;
+}

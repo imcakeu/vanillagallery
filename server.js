@@ -16,80 +16,75 @@ function sendImage(imagePath, contentType, res) {
     });
 }
 
+const host = 'localhost';
 const port = 8080;
 const server = http.createServer();
 server.on("request", (req, res) => {
-    switch(req.url){
-        case "/images":
-            res.end(fs.readFileSync("./images.html", "utf-8"));
-            break;
-          
-        case "/image1":
-            res.end(fs.readFileSync("./image1.html", "utf-8"));
-            break;
-        
-        case "/image2":
-            res.end(fs.readFileSync("./image2.html", "utf-8"));
-            break;
-   
-        case "/image3":
-            res.end(fs.readFileSync("./image3.html", "utf-8"));
-            break;
-               
-        case "/image4":
-            res.end(fs.readFileSync("./image4.html", "utf-8"));
-            break;
-     
-        case "/image5":
-            res.end(fs.readFileSync("./image5.html", "utf-8"));
-            break;
-
-        case "/imgfile1":
-            sendImage("./images/image1.jpg", "image/jpeg", res);
-            break;
-
-        case "/imgfile2":
-            sendImage("./images/image2.jpg", "image/jpeg", res);
-            break;
-
-        case "/imgfile3":
-            sendImage("./images/image3.jpg", "image/jpeg", res);
-            break;
-
-        case "/imgfile4":
-            sendImage("./images/image4.jpg", "image/jpeg", res);
-            break;
-
-        case "/imgfile5":
-            sendImage("./images/image5.jpg", "image/jpeg", res);
-            break;
-
-        case "/imgfile1_small":
-            sendImage("./images/image1_small.jpg", "image/jpeg", res);
-            break;
-    
-        case "/imgfile2_small":
-            sendImage("./images/image2_small.jpg", "image/jpeg", res);
-            break;
-    
-        case "/imgfile3_small":
-            sendImage("./images/image3_small.jpg", "image/jpeg", res);
-            break;
-    
-        case "/imgfile4_small":
-            sendImage("./images/image4_small.jpg", "image/jpeg", res);
-            break;
-    
-        case "/imgfile5_small":
-            sendImage("./images/image5_small.jpg", "image/jpeg", res);
-            break;
-
-        default:
-            res.end(fs.readFileSync("./index.html", "utf-8"));
-            break;
+     if (req.url.startsWith('/images/')) {
+          try {
+              const fichier = fs.readFileSync('.'+req.url);
+              res.end(fichier);
+               // console.log('.'+req.url);
+          } catch (err) {
+              errorHandler(err);
+              res.end('erreur ressource inconnue');
+          }
+     }
+     else if(req.url == "/images"){
+          // page dynamique 
+     } 
+     else if(req.url == "/style") {
+          res.end(fs.readFileSync("./style.css", "utf-8"));
+     }
+     else if(req.url == "/gallery"){
+          // res.end(fs.readFileSync("./gallery.html", "utf-8"));
+          res.end(pageGallery());
+     }
+     else if(req.url == "/"){
+          res.end(fs.readFileSync("./index.html", "utf-8"));
+     }   
+     else{
+          res.end(page404());
      }
 });
 
-server.listen(port, () => {
-     console.log("Server running");
-});
+server.listen(port, host, () => {
+     console.log(`Server running at http://${host}:${port}/`);
+ });
+
+function pageGallery(){
+     let files = fs.readdirSync('./images');
+     let sFiles = files.filter(f => f.endsWith('_small.jpg'));
+
+     let html = '<!DOCTYPE html><html lang="fr">';
+     html += '<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">'
+     html += '<link rel="stylesheet" href="/style">';
+     html += '<title>Photo Gallery</title></head>';
+     html += '<body><br><h1>photo gallery</h1><br><br><br>';
+     html += '<div id="photoGallery">';
+
+     for (let f of sFiles) {
+          let href = "/images/" + f.slice(0, f.length-10) + ".jpg";
+          html += '<a href="' + href + '"><img src="/images/' + f + '"></a> ';
+     }
+
+     html += '</div><br><br><br>';
+     html += '<a href="/">return</a>';
+     html += '</body></html>';
+
+     return html;
+}
+
+function page404(){
+     let html = "<!DOCTYPE html><html lang='fr'>";
+     html += "<head><link rel='stylesheet' href='/style'>";
+     html += "<title>ERROR 404</title></head>";
+     html += "<br><p>404: page not found :v";
+     
+     errorHandler("404 Page not found");
+     return html;
+}
+
+function errorHandler(err){
+     console.log("(!) ERROR: " + err);
+}
